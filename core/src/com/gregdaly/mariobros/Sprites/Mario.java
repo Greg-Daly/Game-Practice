@@ -27,7 +27,7 @@ public class Mario extends Sprite {
     private TextureRegion marioStanding;
     private Animation marioRun;
     private Animation marioJump;
-    private boolean runningRight;
+    private boolean runningLeft;
     private float stateTimer;
 
     public Mario (World world, PlayScreen playScreen){
@@ -36,23 +36,23 @@ public class Mario extends Sprite {
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer =0;
-        runningRight = true;
+        runningLeft = false;
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
-        for (int i = 1; i < 4; i++){
-            frames.add(new TextureRegion(getTexture(),i*16,10,18,16));
+        for (int i = 6; i < 9; i++){
+            frames.add(new TextureRegion(getTexture(),i*23,0,23,40));
         }
         marioRun = new Animation(0.1f,frames);
         frames.clear();
 
         for (int i = 4; i < 6; i++){
-            frames.add(new TextureRegion(getTexture(),i*16,10,18,16));
+            frames.add(new TextureRegion(getTexture(),i*23,0,23,40));
         }
         marioJump = new Animation(0.1f,frames);
 
         defineMario();
-        marioStanding = new TextureRegion(getTexture(),0,10,18,16);
-        setBounds(0,0,16/ MarioBros.PPM,16/MarioBros.PPM);
+        marioStanding = new TextureRegion(getTexture(),0,0,23,40);
+        setBounds(0,0,23/ MarioBros.PPM,40/MarioBros.PPM);
         setRegion(marioStanding);
     }
 
@@ -79,13 +79,13 @@ public class Mario extends Sprite {
                     break;
         }
 
-        if((b2Body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()){
+        if((b2Body.getLinearVelocity().x > 0 || runningLeft) && region.isFlipX()){
             region.flip(true,false);
-            runningRight = false;
+            runningLeft = true;
         }
-        else if ((b2Body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()){
+        else if ((b2Body.getLinearVelocity().x < 0 || !runningLeft) && !region.isFlipX()){
             region.flip(true,false);
-            runningRight = true;
+            runningLeft = false;
         }
         stateTimer = currentState == previousState ? stateTimer + dt : 0;
         previousState = currentState;
