@@ -1,8 +1,8 @@
 package com.gregdaly.mariobros.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,12 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gregdaly.mariobros.MarioBros;
-import com.gregdaly.mariobros.Scenes.Hud;
-import com.gregdaly.mariobros.Sprites.Mario;
-import com.gregdaly.mariobros.Sprites.PChar;
+import com.gregdaly.mariobros.Sprites.Character;
 import com.gregdaly.mariobros.Tools.B2WorldCreator;
 import com.gregdaly.mariobros.Tools.WorldContactListener;
 
@@ -40,7 +37,6 @@ public class PlayScreen implements Screen {
     private TextureAtlas textureAtlas;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
-//    private Hud hud;
     private Touchpad touchpad;
     private Touchpad.TouchpadStyle touchpadStyle;
 
@@ -51,7 +47,8 @@ public class PlayScreen implements Screen {
     private Texture blockTexture;
     private Sprite blockSprite;
     private SpriteBatch batch;
-    private float blockSpeed;
+
+    private Music music;
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -60,15 +57,16 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    private Mario player;
-//    private PChar player;
+    private Character player;
+
+    private int knobTop = 115;
+    private int knobBottom = 85;
 
     public  PlayScreen(MarioBros game){
         textureAtlas = new TextureAtlas("Mario_and_Enemies.pack");
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM, MarioBros.V_HEIGHT/ MarioBros.PPM, gameCam);
-//        hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("lvl1.tmx");
@@ -80,8 +78,7 @@ public class PlayScreen implements Screen {
 
         new B2WorldCreator(world,map);
 
-        player = new Mario(world,this);
-//        player = new PChar(this);
+        player = new Character(world,this);
 
         //Create a touchpad skin
         touchpadSkin = new Skin();
@@ -103,20 +100,17 @@ public class PlayScreen implements Screen {
         touchpad.setBounds(15, 15, 200, 200);
 
         //Create a Stage and add TouchPad
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(MarioBros.V_WIDTH*3, MarioBros.V_HEIGHT*3));
         stage.addActor(touchpad);
         Gdx.input.setInputProcessor(stage);
 
-
-        //Create block sprite
-//        blockTexture = new Texture(Gdx.files.internal("data/block.png"));
-//        blockSprite = new Sprite(blockTexture);
-        //Set position to centre of the screen
-//        blockSprite.setPosition(Gdx.graphics.getWidth()/2-blockSprite.getWidth()/2, Gdx.graphics.getHeight()/2-blockSprite.getHeight()/2);
-
-        blockSpeed = 5;
-
         world.setContactListener(new WorldContactListener());
+
+        music = MarioBros.manager.get("audio/music/FRUG.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(0.3f);
+        music.play();
 
     }
 
@@ -140,16 +134,6 @@ public class PlayScreen implements Screen {
             player.b2Body.applyLinearImpulse(new Vector2(0,-0.01f),player.b2Body.getWorldCenter(),true);
         if(touchpad.getKnobY()<150 && touchpad.getKnobY()>50 && touchpad.getKnobX()<150 && touchpad.getKnobX()>50)
             player.b2Body.setAwake(false);
-
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
-//            player.b2Body.setTransform(player.b2Body.getPosition().x,player.b2Body.getPosition().y+0.01f, 0);
-//        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-//            player.b2Body.setTransform(player.b2Body.getPosition().x+0.01f,player.b2Body.getPosition().y, 90);
-//        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-//            player.b2Body.setTransform(player.b2Body.getPosition().x-0.01f,player.b2Body.getPosition().y, 90);
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
-//            player.b2Body.setTransform(player.b2Body.getPosition().x,player.b2Body.getPosition().y-0.01f, 0);
-
     }
 
     public void update(float deltaTime) {
@@ -188,11 +172,6 @@ public class PlayScreen implements Screen {
         stage.act(Gdx.graphics.getDeltaTime());
 
         stage.draw();
-//        blockSprite.draw(game.batch);
-
-        //set batch to draw
-//        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-//        hud.stage.draw();
 
     }
 
@@ -222,6 +201,5 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         b2dr.dispose();
-//        hud.dispose();
     }
 }
