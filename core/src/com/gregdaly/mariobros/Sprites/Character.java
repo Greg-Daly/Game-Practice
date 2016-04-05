@@ -135,7 +135,7 @@ public class Character extends Sprite {
 
     public void defineMario(){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(32/ MarioBros.PPM,32/MarioBros.PPM);
+        bodyDef.position.set(2,2);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bodyDef);
 

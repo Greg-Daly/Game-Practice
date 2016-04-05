@@ -12,6 +12,6 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 //		config.useGL30 = true;
-		initialize(new MarioBros(), config);
+		initialize(new MarioBros(new ActionResolverAndroid(this)), config);
 	}
 }

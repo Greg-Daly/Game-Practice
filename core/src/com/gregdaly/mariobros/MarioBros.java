@@ -17,6 +17,11 @@ public class MarioBros extends Game {
 	public SpriteBatch batch;
 
 	public static AssetManager manager;
+	public static ActionResolver actionResolver;
+
+	public MarioBros(ActionResolver actionResolver){
+		this.actionResolver =actionResolver;
+	}
 
 	@Override
 	public void create () {

@@ -69,7 +69,7 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM, MarioBros.V_HEIGHT/ MarioBros.PPM, gameCam);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("lvl1.tmx");
+        map = mapLoader.load("world.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/MarioBros.PPM);
         gameCam.position.set(gamePort.getWorldWidth()/2,gamePort.getWorldHeight()/2,0);
 
