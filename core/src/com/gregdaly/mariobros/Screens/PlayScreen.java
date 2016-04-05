@@ -141,8 +141,6 @@ public class PlayScreen implements Screen {
 
         world.step(1 / 60f, 6, 2);
 
-//        Gdx.app.log("X:"+touchpad.getKnobX(),"Y:"+touchpad.getKnobY());
-
         player.update(deltaTime);
 
         gameCam.position.x = player.b2Body.getPosition().x;
